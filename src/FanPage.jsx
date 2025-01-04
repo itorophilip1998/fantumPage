@@ -30,27 +30,25 @@ const FanPage = () => {
 
     fetchPresaveData();
   }, [baseUrl, presaveId]);
-useEffect(() => {
-  const fetchToken = async () => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("access_token");
-    if (code) {
-      localStorage.setItem("spotify_access_token", code);
+  useEffect(() => {
+    const fetchToken = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("access_token");
+      if (code) {
+        localStorage.setItem("spotify_access_token", code);
 
-      // Remove the access_token from the URL
-      params.delete("access_token");
-      window.history.replaceState(
-        null,
-        "",
-        `${window.location.pathname}?${params.toString()}`
-      );
-    }
-  };
+        // Remove the access_token from the URL
+        params.delete("access_token");
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${params.toString()}`
+        );
+      }
+    };
 
-  fetchToken();
-}, []);
-
-
+    fetchToken();
+  }, []);
 
   const handlePresave = async () => {
     if (!presaveData?.songLink) {
@@ -74,8 +72,11 @@ useEffect(() => {
         return;
       }
 
-      const response = await axios.get(
-        `${baseUrl}/track-details?songId=${songId}`, // Backend API
+      const response = await axios.post(
+        `${baseUrl}/presave/${presaveId}`, // Backend API
+        {
+          accessToken
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

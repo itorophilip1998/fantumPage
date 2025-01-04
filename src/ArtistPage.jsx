@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { timeZones } from "./utils/timesZone";
 
 const ArtistPage = () => {
   const [name, setName] = useState("");
@@ -105,9 +106,11 @@ const ArtistPage = () => {
                 onChange={(e) => setTimeZone(e.target.value)}
                 className="w-full p-6 py-7 rounded-lg text-gray-300 bg-[#2d2c2c7f] focus:outline-none focus:border-primary"
               >
-                <option value="GMT+01:00">GMT+01:00</option>
-                <option value="GMT+02:00">GMT+02:00</option>
-                <option value="GMT+03:00">GMT+03:00</option>
+                {timeZones.map((item, index) => (
+                  <option value={item.value} key={index}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
