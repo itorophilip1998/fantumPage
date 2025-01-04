@@ -18,7 +18,7 @@ const ArtistPage = () => {
     // Prepare the data to be sent in the request
     const requestData = {
       title,
-      artist:name,
+      artist: name,
       releaseDate,
       timeZone,
       songLink,
@@ -36,7 +36,7 @@ const ArtistPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setNotification("Presave link created successfully!");
+        setNotification(window.location.origin + "/fan-page/" + data.id);
       } else {
         setNotification(`Error: ${data.message || "Something went wrong"}`);
       }
@@ -60,7 +60,7 @@ const ArtistPage = () => {
               type="text"
               id="name"
               placeholder="Enter your campaign title"
-              value={name}
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full p-6 rounded-lg text-gray-300 bg-[#2d2c2c7f] focus:outline-none focus:border-primary"
             />
@@ -134,9 +134,9 @@ const ArtistPage = () => {
 
         {notification && (
           <div
-            className={`mt-4 p-4 text-center ${
-              notification.includes("Error") ? "bg-red-500" : "bg-green-500"
-            } text-white rounded-md`}
+            className={`mt-4 p-4 text-center bg-[#2d2c2c7f] ${
+              notification.includes("Error") ? "text-red-500" : "text-green-500"
+            }  rounded-md`}
           >
             {notification}
           </div>
