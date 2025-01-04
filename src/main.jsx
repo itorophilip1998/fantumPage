@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Routes>
         <Route path="/artist" element={<ArtistPage />} />
         <Route path="/artist-page" element={<ArtistPage />} />
-        <Route path="/fan-page" element={<FanPage />} />
+        <Route path="/fan-page/:presaveId" element={<FanPage />} />
       </Routes>
     </Router>
   </React.StrictMode>
