@@ -9,16 +9,18 @@ const FanPage = () => {
   const [presaveData, setPresaveData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const baseUrl = `http://localhost:8000/get-presave`;
+  const [track, setTrack] = useState(null);
+  const baseUrl = `http://localhost:8000`;
 
   useEffect(() => {
     const fetchPresaveData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${baseUrl}?id=${presaveId}`); 
+        const response = await axios.get(
+          `${baseUrl}/get-presave?id=${presaveId}`
+        );
         setPresaveData(response.data.presave);
-      // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line no-unused-vars
       } catch (err) {
         setError("Failed to fetch presave data.");
       } finally {
@@ -28,6 +30,69 @@ const FanPage = () => {
 
     fetchPresaveData();
   }, [baseUrl, presaveId]);
+useEffect(() => {
+  const fetchToken = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("access_token");
+    if (code) {
+      localStorage.setItem("spotify_access_token", code);
+
+      // Remove the access_token from the URL
+      params.delete("access_token");
+      window.history.replaceState(
+        null,
+        "",
+        `${window.location.pathname}?${params.toString()}`
+      );
+    }
+  };
+
+  fetchToken();
+}, []);
+
+
+
+  const handlePresave = async () => {
+    if (!presaveData?.songLink) {
+      setError("Please enter a Spotify link");
+      return;
+    }
+
+    // setSuccess(""); // Reset success message
+    // setError(""); // Reset error message
+
+    try {
+      const accessToken = localStorage.getItem("spotify_access_token");
+      if (!accessToken) {
+        window.location.href = `${baseUrl}/login?presaveID=${presaveId}`; // Redirect to login if no token
+        return;
+      }
+
+      const songId = presaveData?.songLink.split("/").pop()?.split("?")[0];
+      if (!songId) {
+        setError("Invalid Spotify song link");
+        return;
+      }
+
+      const response = await axios.get(
+        `${baseUrl}/track-details?songId=${songId}`, // Backend API
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setTrack(response.data); // Set track details state
+      } else {
+        setError("Failed to fetch track details");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch track details");
+    }
+  };
 
   if (loading) {
     return (
@@ -55,7 +120,9 @@ const FanPage = () => {
               <div>
                 <p className="text-lg font-medium">{presaveData.artist}</p>
                 <p className="text-sm text-gray-400">
-                  {moment(presaveData.releaseDate).format("DD MMM, YYYY, hh:mm A")}
+                  {moment(presaveData.releaseDate).format(
+                    "DD MMM, YYYY, hh:mm A"
+                  )}
                 </p>
               </div>
               <div className="text-green-500 text-xl font-bold">
@@ -66,7 +133,10 @@ const FanPage = () => {
               <FaSpotify size={40} className="text-[#1DB954]" />
               <div className="flex justify-between w-full items-center">
                 <p className="font-medium">Spotify</p>
-                <button className="px-4 py-1 mt-1 rounded-lg bg-[#413f3ffd] text-white hover:bg-gray-800">
+                <button
+                  onClick={handlePresave}
+                  className="px-4 py-1 mt-1 rounded-lg bg-[#413f3ffd] text-white hover:bg-gray-800"
+                >
                   Pre-save
                 </button>
               </div>
