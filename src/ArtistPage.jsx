@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const ArtistPage = () => {
   const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
   const [timeZone, setTimeZone] = useState("GMT+01:00");
   const [songLink, setSongLink] = useState("");
@@ -16,7 +17,8 @@ const ArtistPage = () => {
 
     // Prepare the data to be sent in the request
     const requestData = {
-      name,
+      title,
+      artist:name,
       releaseDate,
       timeZone,
       songLink,
@@ -38,7 +40,7 @@ const ArtistPage = () => {
       } else {
         setNotification(`Error: ${data.message || "Something went wrong"}`);
       }
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setNotification("Error: Failed to create presave link.");
     } finally {
@@ -57,7 +59,17 @@ const ArtistPage = () => {
             <input
               type="text"
               id="name"
-              placeholder="Enter your name"
+              placeholder="Enter your campaign title"
+              value={name}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full p-6 rounded-lg text-gray-300 bg-[#2d2c2c7f] focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              id="name"
+              placeholder="Enter artist name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full p-6 rounded-lg text-gray-300 bg-[#2d2c2c7f] focus:outline-none focus:border-primary"
