@@ -17,7 +17,7 @@ const FanPage = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${baseUrl}/get-presave?id=${presaveId}`
+          `${baseUrl}/presave/get-details?id=${presaveId}`
         );
         setPresaveData(response.data.presave);
         // eslint-disable-next-line no-unused-vars
@@ -62,7 +62,7 @@ const FanPage = () => {
     try {
       const accessToken = localStorage.getItem("spotify_access_token");
       if (!accessToken) {
-        window.location.href = `${baseUrl}/login?presaveID=${presaveId}`; // Redirect to login if no token
+        window.location.href = `${baseUrl}/spotify/login?presaveID=${presaveId}`; // Redirect to login if no token
         return;
       }
 
@@ -73,9 +73,11 @@ const FanPage = () => {
       }
 
       const response = await axios.post(
-        `${baseUrl}/presave/${presaveId}`, // Backend API
+        `${baseUrl}/spotify/presave-action`, // Backend API
         {
-          accessToken
+          presaveID: presaveId,
+          accessToken,
+          libraryId: "", //optional
         },
         {
           headers: {
