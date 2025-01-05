@@ -27,13 +27,16 @@ const ArtistPage = () => {
 
     try {
       // Make the API request to the presave endpoint
-      const response = await fetch("http://localhost:8000/presave", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+      const response = await fetch(
+        "http://localhost:8000/presave/store-details",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
