@@ -77,7 +77,7 @@ const FanPage = () => {
         {
           presaveID: presaveId,
           accessToken,
-          libraryId: "", //optional
+          libraryId: null, //optional
         },
         {
           headers: {
